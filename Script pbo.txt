@@ -1,0 +1,414 @@
+BeritaController
+
+<?php
+
+namespace App\Http\Controllers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+class BeritaController extends Controller
+{
+    public function index(){
+        $berita=DB::table('berita')->get();
+    return view('VBerita',['berita'=>$berita]);
+    }
+
+    public function tambah(Request $request)
+    {
+        DB::table('berita')->insert([
+            'kd_berita' => $request->kd_berita,
+            'nama_berita' => $request->nama_berita,
+    
+        ]);
+        // alihkan halaman ke halaman berita
+        return redirect('/berita');
+    
+    }
+
+}
+
+
+
+
+KontakController
+
+<?php
+
+namespace App\Http\Controllers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+class KontakController extends Controller
+{
+    public function index(){
+        $kontak=DB::table('kontak')->get();
+    return view('VKontak',['kontak'=>$kontak]);
+    }
+
+    public function tambah(Request $request)
+    {
+    	DB::table('kontak')->insert([
+			'kd_kontak' => $request->kd_kontak,
+			'nama_kontak' => $request->nama_kontak,
+
+		]);
+		// alihkan halaman ke halaman kontak
+		return redirect('/kontak');
+ 
+    }
+}
+
+ProfileController
+
+<?php
+
+namespace App\Http\Controllers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+class ProfileController extends Controller
+{
+    public function index(){
+        $profile=DB::table('profile')->get();
+    return view('VProfile',['profile'=>$profile]);
+    }
+
+    public function tambah(Request $request)
+    {
+    	DB::table('profile')->insert([
+			'kd_profile' => $request->kd_profile,
+			'nama_profile' => $request->nama_profile,
+
+		]);
+		// alihkan halaman ke halaman profile
+		return redirect('/profile');
+ 
+    }
+}
+
+
+
+------------------------------------------------------------------
+
+
+VBerita.blade.php
+
+@extends('Layout')
+@section('Content')
+
+
+<a href="#" onclick="ModalTambahBerita()"  class="btn btn-success"> + Add New Data</a>
+
+
+
+
+<table class="table table-bordered table-dark">
+    <tr>
+        <th>Kode Berita</th>
+        <th>Nama Berita</th>
+        <th>Opsi</th>
+    </tr>
+    @foreach($berita as $Get)
+    <tr>
+        <td>{{ $Get->kd_berita }}</td>
+        <td>{{ $Get->nama_berita }}</td>
+        <td>
+            <a href="/controller/edit/{{ $Get->kd_berita }}" class="btn btn-info">Update</a>
+            |
+            <a href="/controller/hapus/{{ $Get->kd_berita }}" class="btn btn-danger">Delete</a>
+        </td>
+    </tr>
+    @endforeach
+</table>
+
+
+
+<!-- Form Modal Tambah Berita -->
+<form action="berita/tambah" method="post">
+    @csrf
+<div class="modal fade" id="ModalTambahBerita" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" >Form Tambah</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+            <div class="mb-3">
+                <label  class="form-label">Kode Berita</label>
+                <input type="text" class="form-control" name="kd_berita" required>
+            </div>
+            <div class="mb-3">
+                <label  class="form-label">Nama Berita</label>
+                <textarea name="nama_berita" class="form-control" required></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            <input type="submit" class="btn btn-primary" name="simpan" value="Simpan">
+        </div>
+        </div>
+    </div>
+</div>
+</form>
+<!-- Form Modal Tambah Berita -->
+
+
+
+<script>
+
+    // Modal Tambah Berita
+    function ModalTambahBerita () {
+           $('#ModalTambahBerita').modal('show');
+       }
+    // Modal Tambah Berita
+   
+
+          
+   </script>
+
+
+    
+@endsection
+
+
+VKontak.blade.php
+
+@extends('Layout')
+@section('Content')
+
+<a href="#" onclick="ModalTambahKontak()"  class="btn btn-success"> + Add New Data</a>
+
+
+<table class="table table-bordered table-dark">
+    <tr>
+        <th>Kode Kontak</th>
+        <th>Nama Kontak</th>
+        <th>Opsi</th>
+    </tr>
+    @foreach($kontak as $Get)
+    <tr>
+        <td>{{ $Get->kd_kontak }}</td>
+        <td>{{ $Get->nama_kontak }}</td>
+        <td>
+            <a href="/controller/edit/{{ $Get->kd_kontak }}"  class="btn btn-info">Update</a>
+            |
+            <a href="/controller/hapus/{{ $Get->kd_kontak }}" class="btn btn-danger">Delete</a>
+        </td>
+    </tr>
+    @endforeach
+</table>
+
+
+
+<!-- Form Modal Tambah Kontak -->
+<form action="kontak/tambah" method="post">
+    @csrf
+<div class="modal fade" id="ModalTambahKontak" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" >Form Tambah</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+            <div class="mb-3">
+                <label  class="form-label">Kode Kontak</label>
+                <input type="text" class="form-control" name="kd_kontak" required>
+            </div>
+            <div class="mb-3">
+                <label  class="form-label">Nama Kontak</label>
+                <textarea name="nama_kontak" class="form-control" required></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            <input type="submit" class="btn btn-primary" name="simpan" value="Simpan">
+        </div>
+        </div>
+    </div>
+</div>
+</form>
+<!-- Form Modal Tambah Kontak -->
+
+
+<script>
+
+    // Modal Tambah Kontak
+    function ModalTambahKontak () {
+           $('#ModalTambahKontak').modal('show');
+       }
+    // Modal Tambah Kontak
+   
+   
+   </script>
+
+
+@endsection
+
+
+VProfile.blade.php
+
+@extends('Layout')
+@section('Content')
+
+<a href="#" onclick="ModalTambahProfile()"  class="btn btn-success"> + Add New Data</a>
+
+
+<table class="table table-bordered table-dark">
+    <tr>
+        <th>Kode Profile</th>
+        <th>Nama Profile</th>
+        <th>Opsi</th>
+    </tr>
+    @foreach($profile as $Get)
+    <tr>
+        <td>{{ $Get->kd_profile }}</td>
+        <td>{{ $Get->nama_profile }}</td>
+        <td>
+            <a href="/controller/edit/{{ $Get->kd_profile }}" class="btn btn-info">Update</a>
+            |
+            <a href="/controller/hapus/{{ $Get->kd_profile }}" class="btn btn-danger">Delete</a>
+        </td>
+    </tr>
+    @endforeach
+</table>
+
+
+<!-- Form Modal Tambah Profile -->
+<form action="profile/tambah" method="post">
+    @csrf
+<div class="modal fade" id="ModalTambahProfile" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" >Form Tambah</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+            <div class="mb-3">
+                <label  class="form-label">Kode Profile</label>
+                <input type="text" class="form-control" name="kd_profile" required>
+            </div>
+            <div class="mb-3">
+                <label  class="form-label">Nama Profile</label>
+                <textarea name="nama_profile" class="form-control" required></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            <input type="submit" class="btn btn-primary" name="simpan" value="Simpan">
+        </div>
+        </div>
+    </div>
+</div>
+</form>
+<!-- Form Modal Tambah Profile -->
+
+
+<script>
+
+    // Modal Tambah Profile //
+    function ModalTambahProfile () {
+           $('#ModalTambahProfile').modal('show');
+       }
+    // Modal Tambah Profile//
+   
+</script>
+
+@endsection
+
+
+-----------------------------------------------------
+Router (Web).
+
+
+Berita
+use App\Http\Controllers\BeritaController;
+
+Route::get('berita',[BeritaController::class,'index']);
+Route::post('berita/tambah',[BeritaController::class,'tambah']);
+
+Kontak
+use App\Http\Controllers\KontakController;
+
+Route::get('kontak',[KontakController::class,'index']);
+Route::post('kontak/tambah',[KontakController::class,'tambah']);
+
+Profile
+use App\Http\Controllers\ProfileController;
+
+Route::get('profile',[ProfileController::class,'index']);
+Route::post('profile/tambah',[ProfileController::class,'tambah']);
+
+
+
+--------------------------------------------------------
+
+
+Layout.blade.php
+
+<!doctype html>
+<html lang="en">
+
+    <!-- HEADER -->
+    <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/dataTables.bootstrap5.min.css">
+
+    <script src="assets/js/jquery-3.5.1.js"></script>
+    <script src="assets/js/jquery.dataTables.min.js"></script>
+    <script src="assets/js/dataTables.bootstrap5.min.js"></script>
+
+    <title>Navbar Content</title>
+  </head>
+
+  <body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" href="#">Data Base | </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link active" href="/berita">Berita</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/kontak">Kontak</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/profile">Profile</a>
+            </li>
+        </ul>
+        </div>
+        <div class="flex-shrink-0 dropdown">
+            <a href="" class="btn btn-outline-light me-2">Logout</a>
+    
+        </div>
+    </div>
+</nav>
+
+    <div class="container mt-5">
+        
+        <!-- CONTENT -->
+        @yield('Content')
+
+    </div>
+    
+
+    <!-- JS -->
+    <script src="assets/js/popper.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+   
+  </body>
+</html>
+
